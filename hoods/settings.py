@@ -37,7 +37,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
-    'hoods',
+    'mtaa',
     'bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',
