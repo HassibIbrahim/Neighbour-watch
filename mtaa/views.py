@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http  import HttpResponse,Http404,HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -56,3 +53,7 @@ def activate(request, uidb64, token):
         return HttpResponse('Thank you for your email confirmation. <a href="https://instapichas.herokuapp.com"> Login </a> Now you can login your account.')
     else:
         return HttpResponse('Activation link is invalid!')
+
+def home(request):
+    profile= Profile.get_profile()
+    business= Business.get_business()
