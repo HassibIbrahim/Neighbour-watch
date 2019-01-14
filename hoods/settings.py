@@ -37,6 +37,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
+    'hoods',
     'bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -168,7 +169,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_REDIRECT_URL='home'
-AUTH_PROFILE_MODULE = 'projects.UserProfile'
+AUTH_PROFILE_MODULE = 'hoods.UserProfile'
 
 
 # Configure Django App for Heroku.
