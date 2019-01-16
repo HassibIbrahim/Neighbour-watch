@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.contrib import messages
 
+
 # Create your views here.
 def signup(request):
     if request.method == 'POST':
@@ -59,7 +60,7 @@ def home(request):
 	if request.user.is_authenticated:
 		if Join.objects.filter(user_id = request.user).exists():
 			hood = Hood.objects.get(pk = request.user.join.hood_id.id)
-			posts = Posts.objects.filter(hood = request.user.join.hood_id.id)
+			posts =Posts.objects.filter(hood = request.user.join.hood_id.id)
 			businesses = Business.objects.filter(hood = request.user.join.hood_id.id)
 
 			return render(request,'hoods/hood.html',{"hood":hood,"businesses":businesses,"posts":posts})
@@ -123,7 +124,6 @@ def join(request,hoodId):
 
 	neighbourhood = Hood.objects.get(pk = hoodId)
 	if Join.objects.filter(user_id = request.user).exists():
-
 		Join.objects.filter(user_id = request.user).update(hood_id = neighbourhood)
 	else:
 
@@ -140,21 +140,20 @@ def exitHood(request,hoodId):
 		messages.error(request, 'You have succesfully exited this Neighbourhood.')
 		return redirect('home')
 
-
 def search(request):
-    '''
+	'''
 	This view function will implement search of a hood
 	'''
-    if request.GET['search']:
-        hood_search = request.GET.get("search")
-        hoods = Hood.search_hood(hood_search)
-        message = f"{hood_search}"
+	if request.GET['search']:
+		hood_search = request.GET.get("search")
+		hoods = Hood.search_hood(hood_search)
+		message = f"{hood_search}"
 
-        return render(request,'hoods/search.html',{"message":message,"hoods":hoods})
+		return render(request,'hoods/search.html',{"message":message,"hoods":hoods})
 
-    else:
-        message = "You Haven't searched for any item"
-        return render(request,'hood/search.html',{"message":message})
+	else:
+		message = "You Haven't searched for any item"
+		return render(request,'hood/search.html',{"message":message})
 
 @login_required(login_url='/accounts/login/')
 def create_post(request):
@@ -164,19 +163,35 @@ def create_post(request):
 			form = PostForm(request.POST)
 			if form.is_valid():
 				post = form.save(commit = False)
-				post.user = request.user
+				post.posted_by = request.user
 				post.hood = request.user.join.hood_id
 				post.save()
-				messages.success(request,'You have succesfully created a  Post')
+				messages.success(request,'You have succesfully created a Post')
 				return redirect('home')
 		else:
 			form = PostForm()
 		return render(request,'posts/createpost.html',{"form":form})
 
+@login_required(login_url='/accounts/login/')
+def add_comment(request,pk):
+    post = get_object_or_404(Post, pk=pk)
+    current_user = request.user
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.poster = current_user
+            comment.save()
+            return redirect('home')
+    else:
+        form = CommentForm()
+        return render(request,'comment.html',{"user":current_user,"comment_form":form})
+
 def delete_post(request,postId):
-    Posts.objects.filter(pk = postId).delete()
-    messages.error(request,'Succesfully Deleted a Post')
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+	Posts.objects.filter(pk = postId).delete()
+	messages.error(request,'Succesfully Deleted a Post')
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @login_required(login_url='/accounts/login/')
 def create_hood(request):
