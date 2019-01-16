@@ -84,6 +84,7 @@ def add_profile(request):
         if form.is_valid():
             profile = form.save(commit=False)
             profile.user = current_user
+            profile.email = current_user.email
             profile.save()
         return redirect('home')
 
