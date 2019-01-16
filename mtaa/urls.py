@@ -15,6 +15,8 @@ urlpatterns = [
     url(r'^myhood/$',views.hoods,name = 'hood'),
     url(r'^exitHood/(\d+)',views.exitHood,name = 'exitHood'),
     url(r'^createpost/$',views.create_post,name = 'create_post'),
+    url(r'^createhood/$', views.create_hood, name='create_hood'),
+
 
  ]
 
