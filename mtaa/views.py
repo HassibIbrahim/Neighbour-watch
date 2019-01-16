@@ -23,7 +23,7 @@ def signup(request):
             current_user.is_active = False
             current_user.save()
             current_site = get_current_site(request)
-            mail_subject = 'Activate your MtaaHood Account.'
+            mail_subject = 'Activate your mtaani.com Account.'
             message = render_to_string('registration/acc_active_email.html', {
                 'user': current_user,
                 'domain': current_site.domain,
@@ -89,11 +89,10 @@ def new_business(request):
 
 @login_required(login_url='/accounts/login/')
 def profile(request):
-	'''
-	This view function will fetch a user's profile
-	'''
-	profile = Profile.objects.get(user = request.user)
-	return render(request,'profiles/profile.html',{"profile":profile})
+    profile = Profile.objects.get(user = request.user)
+    hoods = Hood.objects.filter(user = request.user).all()
+    business = Business.objects.filter(user = request.user).all()
+    return render(request,'profiles/profile.html',{"profile":profile,"hoods":hoods,"business": business})
 
 @login_required(login_url='/accounts/login/')
 def edit_profile(request):
