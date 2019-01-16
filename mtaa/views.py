@@ -59,5 +59,18 @@ def home(request):
     business= Business.get_business()
     hoods= Hood.get_hoods()
 
-
     return render(request,"home.html",{"hoods":hoods, "business":business,"profile":profile})
+
+
+@login_required(login_url="/accounts/login/")
+def join(request,operation,pk):
+    hood = get_object_or_404(Hood,pk=pk)
+
+    if operation == 'join':
+        hood.join += 1
+        hood.save()
+        return render(request, "hood.html", {"hood":hood})
+    elif operation =='unjoin':
+        hood.join -= 1
+        hood.save()
+    return redirect('home')
