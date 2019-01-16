@@ -23,7 +23,7 @@ def signup(request):
             current_user.is_active = False
             current_user.save()
             current_site = get_current_site(request)
-            mail_subject = 'Activate your mtaani.com Account.'
+            mail_subject = 'Activate your Maisha Hood Account.'
             message = render_to_string('registration/acc_active_email.html', {
                 'user': current_user,
                 'domain': current_site.domain,
@@ -131,6 +131,7 @@ def join(request,hoodId):
 	messages.success(request, 'Success! You have succesfully joined this Neighbourhood ')
 	return redirect('home')
 
+
 @login_required(login_url='/accounts/login/')
 def exitHood(request,hoodId):
 
@@ -140,9 +141,6 @@ def exitHood(request,hoodId):
 		return redirect('home')
 
 def search(request):
-	'''
-	This view function will implement search of a hood
-	'''
 	if request.GET['search']:
 		hood_search = request.GET.get("search")
 		hoods = Hood.search_hood(hood_search)
@@ -151,7 +149,7 @@ def search(request):
 		return render(request,'hoods/search.html',{"message":message,"hoods":hoods})
 
 	else:
-		message = "You Haven't searched for any item"
+		message = "You Haven't searched for any hood"
 		return render(request,'hood/search.html',{"message":message})
 
 @login_required(login_url='/accounts/login/')
@@ -207,9 +205,25 @@ def create_hood(request):
         form = CreateHoodForm()
     return render(request,'hoods/create_hood.html',{"form":form})
 
+@login_required(login_url='/accounts/login/')
+def update_hood(request,id):
+    current_user = request.user
+    hood = get_object_or_404(Hood,pk=id)
+    if request.method == 'POST':
+        form = CreateHoodForm(request.POST, request.FILES, instance = hood)
+        if form.is_valid():
+            hood = form.save(commit = False)
+            hood.user = current_user
+            hood.save()
+            messages.success(request, 'You Have succesfully Edited Hood Details.')
+        return redirect('home')
+    else:
+        form = CreateHoodForm(instance = hood)
+    return render(request,'hoods/create_hood.html',{"form":form})
 
-def delete_hood(request):
+@login_required(login_url='/accounts/login/')
+def delete_hood(request,id):
 
- 	Hood.objects.filter(user = request.user).delete()
+	Hood.objects.filter(user = request.user,pk=id).delete()
 	messages.error(request,'Succesfully deleted your hood')
 	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

@@ -2,6 +2,7 @@
 {%block content%}
 <br>
 <br>
+<script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 <div class="c" style="padding-top: 24px">
 					{% include 'message/message.html' %}
 			</div>
@@ -10,7 +11,7 @@
 
 	<form class="" action="{% url 'search' %}">
 		<div class="form-group">
-			<input type="text" class="form-control" placeholder="Search Your Hood" name="search">
+			<input type="text" class="form-control" placeholder="Search Your Hood by ID" name="search">
 
 		</div>
 
@@ -33,8 +34,8 @@
 						</div>
 					</div>
 					<hr>
-					<p>Population: {{hood.occupants_count}} {{ hood.join.count| floatformat }}</p>
-				<a class="btn btn-sm btn-success" href="{% url 'join' hood.id %}">Join</a>
+                    <p>Occupants: {{hood.user.join.hood_id.id}}</p>
+					<a class="btn btn-sm btn-success" href="{% url 'join' hood.id %}">Join</a>
 				</div>
 
 			</div>
