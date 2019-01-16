@@ -101,3 +101,24 @@ def edit_profile(request):
     else:
         form = EditProfileForm(instance = profile)
     return render(request, 'profiles/edit_profile.html', {"form": form})
+
+def hoods(request):
+
+	hoods = Hood.objects.filter(user = request.user)
+	return render(request,'hoods/hood.html',{"hoods":hoods})
+
+@login_required(login_url='/accounts/login/')
+def join(request,hoodId):
+	'''
+	This view function will implement adding
+	'''
+	neighbourhood = Hood.objects.get(pk = hoodId)
+	if Join.objects.filter(user_id = request.user).exists():
+
+		Join.objects.filter(user_id = request.user).update(hood_id = neighbourhood)
+	else:
+
+		Join(user_id=request.user,hood_id = neighbourhood).save()
+
+	messages.success(request, 'Success! You have succesfully joined this Neighbourhood ')
+	return redirect('/hoods/hood.html')
